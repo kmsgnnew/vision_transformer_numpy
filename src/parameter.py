@@ -12,11 +12,11 @@ class Parameter:
         self.val = val
         self.optimizer = None
 
-    def backward(self, grad: np.ndarray) -> np.ndarray:
+    def backward(self, grad: np.ndarray) -> None:
         """Backward propagation.
 
         Args:
-            grad: represents the gradient w.r.t. the output. Defaults to None.
+            grad: represents the gradient w.r.t. the output.
         """
         self.cache = dict(grad=np.sum(grad, axis=0)[None, :])
 

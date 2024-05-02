@@ -16,11 +16,10 @@ class Optimizer:
         """
         pass
 
-
 class SGD(Optimizer):
     """Stochastic gradient descent optimizer."""
 
-    def __init__(self, learning_rate: float = 0.01) -> None:
+    def __init__(self, learning_rate: float = 0.001) -> None:
         """Initialize.
 
         Args:

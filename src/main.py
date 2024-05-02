@@ -5,6 +5,7 @@ import numpy as np
 from cross_entropy_loss import CrossEntropyLoss
 from optimizer import Adam
 from vit import ViT
+import tqdm
 
 
 class ViTNumPy:
@@ -25,17 +26,23 @@ class ViTNumPy:
         self.test_epoch_interval = test_epoch_interval
         self.load_dataset_from_file(path_to_mnist)
 
-    def datafeeder(self, x: np.ndarray, y: np.ndarray):
+    def datafeeder(self, x: np.ndarray, y: np.ndarray, shuffle:bool = False):
         """Datafeeder for train test.
 
         Args:
             x: input images.
             y: label.
+            shuffle: shuffle data.
 
         Yields:
             a batch of data
         """
-        for i in range(0, len(x), self.batch_size):
+        if shuffle:
+            randomize = np.arange(len(y))
+            np.random.shuffle(randomize)
+            x = x[:,randomize]
+            y = y[randomize]
+        for i in range(0, len(y), self.batch_size):
             yield x[:, i : i + self.batch_size], y[i : i + self.batch_size]
 
     def load_dataset_from_file(self, path_to_mnist: str) -> None:
@@ -54,12 +61,13 @@ class ViTNumPy:
 
     def train_iter(self) -> None:
         """Train model for one epoch."""
-        dataloader = self.datafeeder(self.x_train, self.y_train)
+        dataloader = self.datafeeder(self.x_train, self.y_train, True)
         train_error = []
-        for batch in dataloader:
+        total_len = len(self.y_train)//self.batch_size
+        for batch in tqdm.tqdm(dataloader, total = total_len):
             x, y = batch
             x = x.transpose(1, 0)
-            x = x.reshape(batch_size, 1, 28, 28)
+            x = x.reshape(self.batch_size, 1, 28, 28)
             y_hat = self.model.forward(x)
             loss = self.loss_function.forward(y_hat, y)
             error = self.loss_function.backward()
@@ -74,10 +82,11 @@ class ViTNumPy:
         test_error = []
         epoch_tp = 0
         epoch_total = 0
-        for batch in test_dataloader:
+        total_len = len(self.y_test)//self.batch_size
+        for batch in tqdm.tqdm(test_dataloader, total = total_len):
             x, y = batch
             x = x.transpose(1, 0)
-            x = x.reshape(batch_size, 1, 28, 28)
+            x = x.reshape(self.batch_size, 1, 28, 28)
             y_hat = self.model.forward(x)
             loss = self.loss_function.forward(y_hat, y)
             y_pred = np.argmax(y_hat, axis=-1)
@@ -108,12 +117,11 @@ def parse_args():
     parser.add_argument(
         "--path_to_mnist",
         dest="path_to_mnist",
-        required=False,
-        default="C:/Users/igs2kor/Documents/from_old_pc/KMS/Technical_papers/CLOUD/code/VIT_personal/",
+        required=True,
     )
-    parser.add_argument("--batch_size", dest="batch_size", required=False, default=32)
-    parser.add_argument("--epochs", dest="epochs", required=False, default=500)
-    parser.add_argument("--test_epoch_interval", dest="test_epoch_interval", required=False, default=5)
+    parser.add_argument("--batch_size", dest="batch_size", required=False, default=16)
+    parser.add_argument("--epochs", dest="epochs", required=False, default=6)
+    parser.add_argument("--test_epoch_interval", dest="test_epoch_interval", required=False, default=2)
     args = parser.parse_args()
     return (args.path_to_mnist, args.batch_size, args.epochs, args.test_epoch_interval)
 
