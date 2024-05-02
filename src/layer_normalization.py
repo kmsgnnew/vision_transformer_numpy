@@ -11,7 +11,7 @@ from src.optimizer import Optimizer
 class LayerNormalization:
     """Applies layer normalization"""
 
-    def __init__(self, normalized_shape, epsilon=0.00001):
+    def __init__(self, normalized_shape, epsilon=0.00001) -> None:
 
         self.normalized_shape = normalized_shape
 

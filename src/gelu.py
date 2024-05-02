@@ -17,10 +17,10 @@ class GELU:
         Returns:
             computed GELU output.
         """
-        # this is an approximation alternatively tanh based implementation can be done
-        self.cache = dict(input=x)
-        z = 0.5 * x * (1 + np.tanh(np.sqrt(2 / np.pi) * (x + 0.044715 * (x**3))))
+        # this is an approximation. tanh based implementation is more accurate
         # z = x * self.sigmoid(1.702 * x)
+        self.cache = dict(input = x)
+        z = 0.5 * x * (1 + np.tanh(np.sqrt(2 / np.pi) * (x + 0.044715 * (x**3))))
         return z
 
     def sigmoid(self, x: np.ndarray) -> np.ndarray:

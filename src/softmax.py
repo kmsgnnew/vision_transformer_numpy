@@ -43,7 +43,7 @@ class Softmax:
                 *tuple(np.arange(0, softmax.ndim - 1, 1, dtype=np.int8).tolist()), -1, -2
             )
             @ softmax[..., np.newaxis, :]
-        )  # np.matmul(softmax[:, :, None], softmax[:, None, :])
+        )
         input_grad = grad[..., np.newaxis, :] @ J
         return input_grad.reshape(grad.shape)
 
