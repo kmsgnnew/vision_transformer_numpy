@@ -29,5 +29,4 @@ Python 3.7.0 is used.
    * test_epoch_interval     : Interval for running test set
 
 ## Testing Numpy Implementation
-Unit tests are available for submodules and can be run using `python -m unittest discover test/`. Forward and backward propagation implemented in NumPy is benchmarked against PyTorch here. 
-. Both forward and backward propagation is implemented in numpy. 
+Unit tests are available for submodules and can be run using `python -m unittest discover test/`. Forward and backward propagation implemented in NumPy is benchmarked against PyTorch here.
